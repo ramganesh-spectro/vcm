@@ -116,7 +116,7 @@ func (a App) runVM(ctx context.Context, cfg config.Config, jsonOutput bool, args
 		return a.runVMCD(ctx, cfg, jsonOutput, args[1:], stdout, stderr)
 	case "list":
 		fs := newFlagSet("vm list")
-		folder := fs.String("folder", "*", "folder path or glob")
+		folder := fs.String("folder", listDefaultFolder(cfg.DefaultFolder), "folder path or glob")
 		if err := fs.Parse(args[1:]); err != nil {
 			return fail(stderr, err)
 		}
@@ -400,6 +400,13 @@ func cloneDefault(value string, fallback string) string {
 		return strings.TrimSpace(value)
 	}
 	return fallback
+}
+
+func listDefaultFolder(value string) string {
+	if strings.TrimSpace(value) != "" {
+		return strings.TrimSpace(value)
+	}
+	return "*"
 }
 
 func newFlagSet(name string) *flag.FlagSet {
