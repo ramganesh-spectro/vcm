@@ -1,0 +1,5 @@
+.gocache/
+.gopath/
+/vcm
+*.test
+coverage.out
