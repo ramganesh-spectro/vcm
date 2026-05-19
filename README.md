@@ -68,11 +68,14 @@ Use `--insecure` or `VCM_INSECURE=true` for lab vCenters with self-signed certif
 List VMs:
 
 ```sh
-./vcm vm list --folder Lab
-./vcm --json vm list --folder Lab
+./vcm vm list
+./vcm vm list --folder sp-ramganesh.senthilkumar
+./vcm --json vm list
 ```
 
-For a plain folder name, `vm list` searches **recursively** under that folder (nested subfolders included). To list only VMs directly in a folder, pass an explicit glob, for example `--folder 'Lab/*'`.
+With no `--folder`, `vm list` uses `defaultFolder` from `~/.config/vcm/config.yaml`. If that is unset, it lists the whole datacenter (`*`).
+
+For a plain folder name, `vm list` searches **recursively** under that folder (nested subfolders included). To list only VMs directly in a folder, pass an explicit glob, for example `--folder 'sp-ramganesh.senthilkumar/*'`.
 
 Inspect a VM:
 

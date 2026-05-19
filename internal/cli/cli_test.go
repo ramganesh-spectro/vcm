@@ -12,6 +12,40 @@ import (
 	"vcm/internal/vsphere"
 )
 
+func TestVMListUsesConfigDefaultFolder(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "config.yaml")
+	content := []byte(`
+url: vcsa.example.com
+username: user
+password: secret
+datacenter: Datacenter
+defaultFolder: sp-ramganesh.senthilkumar
+`)
+	if err := os.WriteFile(configPath, content, 0o600); err != nil {
+		t.Fatalf("write test config: %v", err)
+	}
+
+	svc := &fakeService{}
+	app := App{
+		NewClient: func(_ context.Context, cfg config.Config) (Service, error) {
+			return svc, nil
+		},
+	}
+
+	var stdout, stderr bytes.Buffer
+	code := app.Run(context.Background(), []string{
+		"--config", configPath,
+		"vm", "list",
+	}, &stdout, &stderr)
+
+	if code != 0 {
+		t.Fatalf("exit code = %d, stderr = %s", code, stderr.String())
+	}
+	if svc.listFolder != "sp-ramganesh.senthilkumar" {
+		t.Fatalf("list folder = %q", svc.listFolder)
+	}
+}
+
 func TestVMListDispatchesFolderAndPrintsTable(t *testing.T) {
 	svc := &fakeService{
 		vms: []vsphere.VM{{
